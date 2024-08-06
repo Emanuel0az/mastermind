@@ -11,7 +11,7 @@ PELOTA = "O"
 
 
 def crear_tablero():
-    return [[PELOTA for _ in range(4)] for _ in range(6)]
+    return [[PELOTA for _ in range(4)] for _ in range(12)]
 
 
 def generar_secuencia_correcta():
@@ -71,7 +71,7 @@ def imprimir_tablero(tablero):
 def jugador_adivina():
     secuencia_correcta = generar_secuencia_correcta()
     tablero = crear_tablero()
-    intentos_restantes = 6
+    intentos_restantes = 12
     fila_actual = 0
 
     while intentos_restantes > 0:
@@ -95,11 +95,12 @@ def jugador_adivina():
 def maquina_adivina():
     secuencia_correcta = obtener_intento_jugador()  
     tablero = crear_tablero()
-    intentos_restantes = 6
+    intentos_restantes = 12
     fila_actual = 0
-    posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
+    #posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
 
-    while intentos_restantes > 0 and posibles_combinaciones:
+    while intentos_restantes != 0 :
+        posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
         intento_maquina = random.choice(posibles_combinaciones)
         print(f"La máquina intenta: {intento_maquina}")
         pistas = comparar_secuencias(secuencia_correcta, intento_maquina)
@@ -115,7 +116,7 @@ def maquina_adivina():
         posibles_combinaciones = [comb for comb in posibles_combinaciones if comparar_secuencias(intento_maquina, comb) == pistas]
 
         fila_actual += 1
-        intentos_restantes -= 1
+        intentos_restantes = intentos_restantes - 1
         print(f"La máquina tiene {intentos_restantes} intentos restantes.\n")
         time.sleep(1)  # se añade un tiempo de espera de 1 segundo
 
