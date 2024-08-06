@@ -64,7 +64,7 @@ def actualizar_tablero(tablero, intento_jugador, pistas, fila_actual):
 
 def imprimir_tablero(tablero):
     for fila in tablero:
-        print(' '.join(fila))
+        print(' | '.join(fila))
         print()
 
 
@@ -129,11 +129,21 @@ def mastermind():
     modo = input("¿Quieres ser el creador del código o el adivinador? (creador/adivinador): ").strip().lower()
 
     if modo == 'creador':
-        maquina_adivina()
+        modo_maquina = input("Elige el modo de la maquina (Aleatorio/Estratega): ").strip().lower()
+        if modo_maquina == 'Aleatorio'.strip().lower():
+            maquina_adivina()
+        elif modo_maquina == 'Estratega'.strip().lower():
+            maquina_estratega()
     elif modo == 'adivinador':
         jugador_adivina()
     else:
         print("Opción no válida. Por favor, reinicia el juego e ingresa una opción válida.")
+
+
+def maquina_estratega():
+    pass
+
+
 
 
 if __name__ == "__main__":
