@@ -141,7 +141,63 @@ def mastermind():
 
 
 def maquina_estratega():
-    pass
+    secuencia_correcta = obtener_intento_jugador()
+    tablero = crear_tablero()
+    intentos_restantes = 12
+    fila_actual = 0
+
+    posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
+    ultimo_intento = posibles_combinaciones[0]
+    intentos_realizados = []
+
+def maquina_estratega():
+    secuencia_correcta = obtener_intento_jugador()
+    tablero = crear_tablero()
+    intentos_restantes = 12
+    fila_actual = 0
+
+    posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
+    ultimo_intento = posibles_combinaciones[0]
+    intentos_realizados = []
+    ultima_pista = [None] * 4
+
+    while intentos_restantes > 0:
+        print(f"La máquina intenta: {ultimo_intento}")
+        pistas = comparar_secuencias(secuencia_correcta, ultimo_intento)
+        actualizar_tablero(tablero, ultimo_intento, pistas, fila_actual)
+        imprimir_tablero(tablero)
+
+        if pistas == ['green', 'green', 'green', 'green']:
+            print("¡La máquina adivinó tu secuencia!")
+            break
+
+        # Actualizar pistas para las posiciones correctas
+        for i in range(4):
+            if pistas[i] == 'green':
+                ultima_pista[i] = ultimo_intento[i]
+
+        # Generar nuevas combinaciones manteniendo las posiciones correctas
+        posibles_combinaciones = [
+            [ultima_pista[i] if ultima_pista[i] is not None else comb[i] for i in range(4)]
+            for comb in posibles_combinaciones
+        ]
+
+        # Filtrar combinaciones basadas en las pistas obtenidas
+        posibles_combinaciones = [
+            comb for comb in posibles_combinaciones 
+            if comparar_secuencias(ultimo_intento, comb) == pistas
+        ]
+
+        if posibles_combinaciones:
+            ultimo_intento = posibles_combinaciones[0]
+
+        fila_actual += 1
+        intentos_restantes -= 1
+        print(f"La máquina tiene {intentos_restantes} intentos restantes.\n")
+        time.sleep(1)
+
+    if intentos_restantes == 0:
+        print("La máquina no pudo adivinar tu secuencia.")
 
 
 
