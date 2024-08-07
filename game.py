@@ -155,16 +155,48 @@ def maquina_estratega():
     if intentos_restantes == 0:
         print("La máquina no pudo adivinar tu secuencia.")
 
+def maquina_demon():
+    secuencia_correcta = obtener_intento_jugador()
+    tablero = crear_tablero()
+    intentos_restantes = 12
+    fila_actual = 0
+
+    # primer intento aleatorio
+    intento_maquina = random.choices(COLORES_DISPONIBLES, k=4)
+    print(f"La máquina intenta: {intento_maquina}")
+    pistas = comparar_secuencias(secuencia_correcta, intento_maquina)
+    actualizar_tablero(tablero, intento_maquina, pistas, fila_actual)
+    imprimir_tablero(tablero)
+
+    fila_actual += 1
+    intentos_restantes -= 1
+    print(f"La máquina tiene {intentos_restantes} intentos restantes.\n")
+    time.sleep(1)
+
+    # segundo intento usando la secuencia correcta
+    intento_maquina = secuencia_correcta
+    print(f"La máquina intenta: {intento_maquina}")
+    pistas = comparar_secuencias(secuencia_correcta, intento_maquina)
+    actualizar_tablero(tablero, intento_maquina, pistas, fila_actual)
+    imprimir_tablero(tablero)
+
+    if pistas == ['green', 'green', 'green', 'green']:
+        print("¡La máquina adivinó tu secuencia!")
+    else:
+        print("La máquina no pudo adivinar tu secuencia, pero debería haberlo hecho.")
+
 def mastermind():
     print("Bienvenido al juego de Mastermind!")
     modo = input("¿Quieres ser el creador del código o el adivinador? (creador/adivinador): ").strip().lower()
 
     if modo == 'creador':
-        modo_maquina = input("Elige el modo de la maquina (Aleatorio/Estratega): ").strip().lower()
+        modo_maquina = input("Elige el modo de la maquina (Aleatorio/Estratega/Hell): ").strip().lower()
         if modo_maquina == 'aleatorio':
             maquina_adivina()
         elif modo_maquina == 'estratega':
             maquina_estratega()
+        elif modo_maquina == 'hell':
+            maquina_demon()
     elif modo == 'adivinador':
         jugador_adivina()
     else:

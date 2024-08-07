@@ -27,3 +27,6 @@
 
 ## funcion mastermind 
     maneja el flujo del juego de forma que divide los roles de adivinador y creador del codigo secreto
+
+
+   
