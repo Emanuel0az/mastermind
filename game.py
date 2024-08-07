@@ -3,20 +3,14 @@ import itertools
 from termcolor import colored
 import time  
 
-
 COLORES_DISPONIBLES = ['red', 'green', 'blue', 'yellow', 'orange', 'brown']
-
-
 PELOTA = "O"
-
 
 def crear_tablero():
     return [[PELOTA for _ in range(4)] for _ in range(12)]
 
-
 def generar_secuencia_correcta():
     return random.sample(COLORES_DISPONIBLES, 4)
-
 
 def obtener_intento_jugador():
     intento = []
@@ -29,20 +23,17 @@ def obtener_intento_jugador():
         intento.append(color)
     return intento
 
-# Compara la secuencia del jugador con la secuencia correcta
 def comparar_secuencias(secuencia_correcta, intento_jugador):
     pistas = ['default'] * 4
     secuencia_correcta_temp = secuencia_correcta[:]
     intento_jugador_temp = intento_jugador[:]
 
-    # se asigna 'green' a las posiciones correctas
     for i in range(4):
         if intento_jugador[i] == secuencia_correcta[i]:
             pistas[i] = 'green'
-            secuencia_correcta_temp[i] = None  # se marca el color como usado
-            intento_jugador_temp[i] = None  # se marca el color como usado
+            secuencia_correcta_temp[i] = None
+            intento_jugador_temp[i] = None
 
-    # se asigna 'yellow' a los colores correctos en posiciones incorrectas
     for i in range(4):
         if intento_jugador_temp[i] is not None:
             if intento_jugador_temp[i] in secuencia_correcta_temp:
@@ -50,7 +41,6 @@ def comparar_secuencias(secuencia_correcta, intento_jugador):
                 secuencia_correcta_temp[secuencia_correcta_temp.index(intento_jugador_temp[i])] = None
 
     return pistas
-
 
 def actualizar_tablero(tablero, intento_jugador, pistas, fila_actual):
     for i in range(4):
@@ -61,12 +51,30 @@ def actualizar_tablero(tablero, intento_jugador, pistas, fila_actual):
         else:
             tablero[fila_actual][i] = colored(PELOTA, 'white')
 
-
 def imprimir_tablero(tablero):
     for fila in tablero:
         print(' | '.join(fila))
         print()
 
+class MaquinaEstratega:
+    def __init__(self):
+        self.colores = COLORES_DISPONIBLES
+        self.historial = []
+
+    def logicaDificil(self):
+        if not self.historial:
+            return random.choices(self.colores, k=4)
+        ultima_secuencia, ultimos_verificadores = self.historial[-1]
+        nueva_secuencia = ultima_secuencia[:]
+        for i in range(4):
+            if ultimos_verificadores[i] == 'green':
+                continue
+            elif ultimos_verificadores[i] == 'yellow':
+                colores_restantes = [color for color in self.colores if color != ultima_secuencia[i]]
+                nueva_secuencia[i] = random.choice(colores_restantes)
+            else:
+                nueva_secuencia[i] = random.choice(self.colores)
+        return nueva_secuencia
 
 def jugador_adivina():
     secuencia_correcta = generar_secuencia_correcta()
@@ -91,15 +99,13 @@ def jugador_adivina():
     if intentos_restantes == 0:
         print("Se te acabaron los intentos. La secuencia correcta era:", secuencia_correcta)
 
-
 def maquina_adivina():
-    secuencia_correcta = obtener_intento_jugador()  
+    secuencia_correcta = obtener_intento_jugador()
     tablero = crear_tablero()
     intentos_restantes = 12
     fila_actual = 0
-    #posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
 
-    while intentos_restantes != 0 :
+    while intentos_restantes != 0:
         posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
         intento_maquina = random.choice(posibles_combinaciones)
         print(f"La máquina intenta: {intento_maquina}")
@@ -107,89 +113,11 @@ def maquina_adivina():
         actualizar_tablero(tablero, intento_maquina, pistas, fila_actual)
         imprimir_tablero(tablero)
 
-      
         if intento_maquina == secuencia_correcta:
             print("¡La máquina adivinó tu secuencia!")
             break
 
-
         posibles_combinaciones = [comb for comb in posibles_combinaciones if comparar_secuencias(intento_maquina, comb) == pistas]
-
-        fila_actual += 1
-        intentos_restantes = intentos_restantes - 1
-        print(f"La máquina tiene {intentos_restantes} intentos restantes.\n")
-        time.sleep(1)  # se añade un tiempo de espera de 1 segundo
-
-    if intentos_restantes == 0:
-        print("La máquina no pudo adivinar tu secuencia.")
-
-# función principal que controla el flujo del juego
-def mastermind():
-    print("Bienvenido al juego de Mastermind!")
-    modo = input("¿Quieres ser el creador del código o el adivinador? (creador/adivinador): ").strip().lower()
-
-    if modo == 'creador':
-        modo_maquina = input("Elige el modo de la maquina (Aleatorio/Estratega): ").strip().lower()
-        if modo_maquina == 'Aleatorio'.strip().lower():
-            maquina_adivina()
-        elif modo_maquina == 'Estratega'.strip().lower():
-            maquina_estratega()
-    elif modo == 'adivinador':
-        jugador_adivina()
-    else:
-        print("Opción no válida. Por favor, reinicia el juego e ingresa una opción válida.")
-
-
-def maquina_estratega():
-    secuencia_correcta = obtener_intento_jugador()
-    tablero = crear_tablero()
-    intentos_restantes = 12
-    fila_actual = 0
-
-    posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
-    ultimo_intento = posibles_combinaciones[0]
-    intentos_realizados = []
-
-def maquina_estratega():
-    secuencia_correcta = obtener_intento_jugador()
-    tablero = crear_tablero()
-    intentos_restantes = 12
-    fila_actual = 0
-
-    posibles_combinaciones = [list(seq) for seq in set(itertools.permutations(COLORES_DISPONIBLES, 4))]
-    ultimo_intento = posibles_combinaciones[0]
-    intentos_realizados = []
-    ultima_pista = [None] * 4
-
-    while intentos_restantes > 0:
-        print(f"La máquina intenta: {ultimo_intento}")
-        pistas = comparar_secuencias(secuencia_correcta, ultimo_intento)
-        actualizar_tablero(tablero, ultimo_intento, pistas, fila_actual)
-        imprimir_tablero(tablero)
-
-        if pistas == ['green', 'green', 'green', 'green']:
-            print("¡La máquina adivinó tu secuencia!")
-            break
-
-        # Actualizar pistas para las posiciones correctas
-        for i in range(4):
-            if pistas[i] == 'green':
-                ultima_pista[i] = ultimo_intento[i]
-
-        # Generar nuevas combinaciones manteniendo las posiciones correctas
-        posibles_combinaciones = [
-            [ultima_pista[i] if ultima_pista[i] is not None else comb[i] for i in range(4)]
-            for comb in posibles_combinaciones
-        ]
-
-        # Filtrar combinaciones basadas en las pistas obtenidas
-        posibles_combinaciones = [
-            comb for comb in posibles_combinaciones 
-            if comparar_secuencias(ultimo_intento, comb) == pistas
-        ]
-
-        if posibles_combinaciones:
-            ultimo_intento = posibles_combinaciones[0]
 
         fila_actual += 1
         intentos_restantes -= 1
@@ -199,8 +127,48 @@ def maquina_estratega():
     if intentos_restantes == 0:
         print("La máquina no pudo adivinar tu secuencia.")
 
+def maquina_estratega():
+    secuencia_correcta = obtener_intento_jugador()
+    tablero = crear_tablero()
+    intentos_restantes = 12
+    fila_actual = 0
 
+    estrategia = MaquinaEstratega()
 
+    while intentos_restantes > 0:
+        intento_maquina = estrategia.logicaDificil()
+        print(f"La máquina intenta: {intento_maquina}")
+        pistas = comparar_secuencias(secuencia_correcta, intento_maquina)
+        estrategia.historial.append((intento_maquina, pistas))
+        actualizar_tablero(tablero, intento_maquina, pistas, fila_actual)
+        imprimir_tablero(tablero)
+
+        if pistas == ['green', 'green', 'green', 'green']:
+            print("¡La máquina adivinó tu secuencia!")
+            break
+
+        fila_actual += 1
+        intentos_restantes -= 1
+        print(f"La máquina tiene {intentos_restantes} intentos restantes.\n")
+        time.sleep(1)
+
+    if intentos_restantes == 0:
+        print("La máquina no pudo adivinar tu secuencia.")
+
+def mastermind():
+    print("Bienvenido al juego de Mastermind!")
+    modo = input("¿Quieres ser el creador del código o el adivinador? (creador/adivinador): ").strip().lower()
+
+    if modo == 'creador':
+        modo_maquina = input("Elige el modo de la maquina (Aleatorio/Estratega): ").strip().lower()
+        if modo_maquina == 'aleatorio':
+            maquina_adivina()
+        elif modo_maquina == 'estratega':
+            maquina_estratega()
+    elif modo == 'adivinador':
+        jugador_adivina()
+    else:
+        print("Opción no válida. Por favor, reinicia el juego e ingresa una opción válida.")
 
 if __name__ == "__main__":
     mastermind()
