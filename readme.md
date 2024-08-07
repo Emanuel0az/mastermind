@@ -25,6 +25,9 @@
 ## funcion maquina adivina
     le da a la maquina 12 intentos para adivinar la secuencia puesta por el jugador, la maquina lo hace de forma aleatoria y se logra ver la decicion de la maquina y tambien le genera pistas
 
+## funcion maquina demon (PERSONAL)
+    le da a la maquina 12 intentos de adivinar la secuencia pero lo hace en 2 intentod ya que en el segundo intento le digo que el intento maquina sea igual al codigo secreto
+
 ## funcion mastermind 
     maneja el flujo del juego de forma que divide los roles de adivinador y creador del codigo secreto
 
