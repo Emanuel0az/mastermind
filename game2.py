@@ -21,10 +21,21 @@ class Tablero:
             else:
                 self.tablero[fila][i] = colored(PELOTA, 'white')
 
-    def imprimir(self):
-        for fila in self.tablero:
-            print(' | '.join(fila))
+    def imprimir(self, tablero_secundario=None):
+        for fila_secundaria, fila_principal in zip(tablero_secundario.tablero, self.tablero):
+            fila_completa = ' | '.join(fila_secundaria) + "    " + ' | '.join(fila_principal)
+            print(fila_completa)
             print()
+
+class TableroSecundario:
+    def __init__(self, filas=12, columnas=4):
+        self.filas = filas
+        self.columnas = columnas
+        self.tablero = [["⚪" for _ in range(columnas)] for _ in range(filas)]
+
+    def marcar_fila_ganadora(self, fila):
+        for i in range(self.columnas):
+            self.tablero[fila][i] = "🟢"
 
 class Jugador:
     def __init__(self):
@@ -77,6 +88,7 @@ class Maquina:
 class Juego:
     def __init__(self):
         self.tablero = Tablero()
+        self.tablero_secundario = TableroSecundario()
         self.jugador = Jugador()
         self.maquina = Maquina()
 
@@ -108,7 +120,9 @@ class Juego:
             intento_jugador = self.jugador.obtener_intento()
             pistas = self.comparar_secuencias(secuencia_correcta, intento_jugador)
             self.tablero.actualizar(intento_jugador, pistas, fila_actual)
-            self.tablero.imprimir()
+            if pistas == ['green', 'green', 'green', 'green']:
+                self.tablero_secundario.marcar_fila_ganadora(fila_actual)
+            self.tablero.imprimir(tablero_secundario=self.tablero_secundario)
 
             if pistas == ['green', 'green', 'green', 'green']:
                 print("¡Felicidades! Adivinaste la secuencia correcta.")
@@ -132,7 +146,9 @@ class Juego:
             pistas = self.comparar_secuencias(secuencia_correcta, intento_maquina)
             self.maquina.historial.append((intento_maquina, pistas))
             self.tablero.actualizar(intento_maquina, pistas, fila_actual)
-            self.tablero.imprimir()
+            if pistas == ['green', 'green', 'green', 'green']:
+                self.tablero_secundario.marcar_fila_ganadora(fila_actual)
+            self.tablero.imprimir(tablero_secundario=self.tablero_secundario)
 
             if pistas == ['green', 'green', 'green', 'green']:
                 print("¡La máquina adivinó tu secuencia!")
